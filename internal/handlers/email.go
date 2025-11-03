@@ -21,7 +21,7 @@ func NewEmailHandler(emailService *email.EmailService) *EmailHandler {
 type SendAuthCodeRequest struct {
 	Email string `json:"email" binding:"required,email"`
 	Code  string `json:"code" binding:"required"`
-	Type  string `json:"type" binding:"required,oneof=login registration"`
+	Type  string `json:"type" binding:"required,oneof=update registration"`
 }
 
 type Response struct {
@@ -30,7 +30,6 @@ type Response struct {
 	Error   string `json:"error,omitempty"`
 }
 
-// SendAuthCode обработчик для отправки кода аутентификации
 func (h *EmailHandler) SendAuthCode(c *gin.Context) {
 	var req SendAuthCodeRequest
 
@@ -43,7 +42,6 @@ func (h *EmailHandler) SendAuthCode(c *gin.Context) {
 		return
 	}
 
-	// Отправляем email с кодом
 	if err := h.emailService.SendAuthCode(req.Email, req.Code, req.Type); err != nil {
 		c.JSON(http.StatusInternalServerError, Response{
 			Success: false,
@@ -59,9 +57,7 @@ func (h *EmailHandler) SendAuthCode(c *gin.Context) {
 	})
 }
 
-// HealthCheck проверка здоровья сервиса
 func (h *EmailHandler) HealthCheck(c *gin.Context) {
-	// Проверяем соединение с SMTP
 	if err := h.emailService.TestConnection(); err != nil {
 		c.JSON(http.StatusServiceUnavailable, gin.H{
 			"status":  "unhealthy",
