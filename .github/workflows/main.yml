@@ -73,8 +73,8 @@ jobs:
           context: .
           push: true
           tags: |
-            ${{ secrets.REGISTRY_URL }}/message-service:latest
-            ${{ secrets.REGISTRY_URL }}/message-service:${{ steps.version.outputs.new_tag }}
+            ${{ secrets.REGISTRY_URL }}/email-service:latest
+            ${{ secrets.REGISTRY_URL }}/email-service:${{ steps.version.outputs.new_tag }}
 
       # 6️⃣ Создание нового git-тега
       - name: Create new git tag
