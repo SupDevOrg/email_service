@@ -17,6 +17,12 @@
 # Go workspace file (если не используешь модули)
 go.work
 
+# cmd
+cmd/**/server
+cmd/**/myapp
+cmd/**/*.exe
+cmd/**/*.dll
+
 # Build artifacts
 /bin/
 /pkg/
