@@ -1,0 +1,46 @@
+# Compiled Object files, Static and Dynamic libs (Shared Objects)
+*.o
+*.a
+*.so
+*.dylib
+
+# Binaries
+*.exe
+*.exe~
+*.dll
+
+# Output of the go coverage tool
+*.out
+*.cov
+*.coverprofile
+
+# Go workspace file (если не используешь модули)
+go.work
+
+# cmd
+cmd/**/server
+cmd/**/myapp
+cmd/**/*.exe
+cmd/**/*.dll
+
+# Build artifacts
+/bin/
+/pkg/
+/dist/
+/vendor/
+debug
+debug.test
+
+# IDE
+.idea/
+.vscode/
+*.sublime-*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs and temp
+*.log
+*.tmp
+*~
