@@ -46,13 +46,13 @@ func (s *EmailService) SendAuthCode(email, code, authType string) error {
 
 	var body string
 	switch authType {
-	case "login":
-		subject = "Login Verification Code"
+	case "update":
+		subject = "Update email Verification Code"
 		body = fmt.Sprintf(`
 			<html>
 			<body>
-				<h2>Login Verification</h2>
-				<p>Your login verification code is: <strong>%s</strong></p>
+				<h2>Email Verification</h2>
+				<p>Your email verification code is: <strong>%s</strong></p>
 			</body>
 			</html>
 		`, code)
