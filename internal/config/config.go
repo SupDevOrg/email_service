@@ -7,6 +7,7 @@ import (
 
 type Config struct {
 	ServerPort   string
+	HealthCheckPort  string
 	SMTPHost     string
 	SMTPPort     int
 	SMTPUsername string
@@ -21,6 +22,7 @@ type Config struct {
 func Load() *Config {
 	return &Config{
 		ServerPort:   getEnv("SERVER_PORT", "8080"),
+		HealthCheckPort:   getEnv("HEALTH_PORT", "8081"),
 		SMTPHost:     getEnv("SMTP_HOST", "smtp.mail.ru"),
 		SMTPPort:     getEnvAsInt("SMTP_PORT", 587),
 		SMTPUsername: getEnv("SMTP_USERNAME", "supdev@list.ru"),
