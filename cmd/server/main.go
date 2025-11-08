@@ -10,16 +10,15 @@ import (
 	"email-service/internal/config"
 	"email-service/internal/email"
 	"email-service/internal/kafka"
+	"email-service/internal/handlers"
+	"github.com/gin-gonic/gin"
 )
 
 func main() {
-	// Загрузка конфигурации
 	cfg := config.Load()
 
-	// Инициализация email сервиса
 	emailService := email.NewEmailService(cfg)
 
-	// Проверка соединения с SMTP
 	if err := emailService.TestConnection(); err != nil {
 		log.Printf("Warning: SMTP connection test failed: %v", err)
 	} else {
@@ -32,7 +31,12 @@ func main() {
 		cfg.KafkaGroupID, 
 		emailService,
 	)
-
+	emailHandler := handlers.NewEmailHandler(emailService)
+	router := gin.Default()
+	router.GET("/health", emailHandler.HealthCheck)
+	go func() {
+    router.Run(":" + cfg.HealthCheckPort) 
+	}()
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
