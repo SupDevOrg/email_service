@@ -1,3 +1,4 @@
+```env
 SERVER_PORT	8080
 SMTP_HOST	smtp.mail.ru
 SMTP_PORT	587
