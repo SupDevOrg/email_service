@@ -3,11 +3,11 @@ package config
 import (
 	"os"
 	"strconv"
+	"fmt"
 )
 
 type Config struct {
 	ServerPort   string
-	HealthCheckPort  string
 	SMTPHost     string
 	SMTPPort     int
 	SMTPUsername string
@@ -19,27 +19,53 @@ type Config struct {
 	KafkaGroupID string
 }
 
-func Load() *Config {
-	return &Config{
-		ServerPort:   getEnv("SERVER_PORT", "8080"),
-		HealthCheckPort:   getEnv("HEALTH_PORT", "8081"),
-		SMTPHost:     getEnv("SMTP_HOST", "smtp.mail.ru"),
-		SMTPPort:     getEnvAsInt("SMTP_PORT", 587),
-		SMTPUsername: getEnv("SMTP_USERNAME", "supdev@list.ru"),
-		SMTPPassword: getEnv("SMTP_PASSWORD", "HHrq5jHranb5OXDhyYmy"),
-		FromEmail:    getEnv("FROM_EMAIL", ""),
+func Load() (*Config, error) {
+	cfg := &Config{}
 
-		KafkaBrokers: getEnv("KAFKA_BROKERS", "kafka:29092"),
-		KafkaTopic:   getEnv("KAFKA_TOPIC", "email-auth-codes"),
-		KafkaGroupID: getEnv("KAFKA_GROUP_ID", "email-service"),
+	var ok bool
+	if cfg.ServerPort, ok = getEnv("SERVER_PORT"); !ok {
+		return nil, fmt.Errorf("SERVER_PORT is required")
 	}
+
+	if cfg.SMTPHost, ok = getEnv("SMTP_HOST"); !ok {
+		return nil, fmt.Errorf("SMTP_HOST is required")
+	}
+
+	if cfg.SMTPUsername, ok = getEnv("SMTP_USERNAME"); !ok {
+		return nil, fmt.Errorf("SMTP_USERNAME is required")
+	}
+
+	if cfg.SMTPPassword, ok = getEnv("SMTP_PASSWORD"); !ok {
+		return nil, fmt.Errorf("SMTP_PASSWORD is required")
+	}
+
+	if cfg.FromEmail, ok = getEnv("FROM_EMAIL"); !ok {
+		return nil, fmt.Errorf("FROM_EMAIL is required")
+	}
+
+	if cfg.KafkaBrokers, ok = getEnv("KAFKA_BROKERS"); !ok {
+		return nil, fmt.Errorf("KAFKA_BROKERS is required")
+	}
+
+	if cfg.KafkaTopic, ok = getEnv("KAFKA_TOPIC"); !ok {
+		return nil, fmt.Errorf("KAFKA_TOPIC is required")
+	}
+
+	if cfg.KafkaGroupID, ok = getEnv("KAFKA_GROUP_ID"); !ok {
+		return nil, fmt.Errorf("KAFKA_GROUP_ID is required")
+	}
+
+	cfg.SMTPPort = getEnvAsInt("SMTP_PORT", 0)
+	if cfg.SMTPPort == 0 {
+		return nil, fmt.Errorf("SMTP_PORT is required and must be int")
+	}
+
+	return cfg, nil
 }
 
-func getEnv(key, defaultValue string) string {
-	if value, exists := os.LookupEnv(key); exists {
-		return value
-	}
-	return defaultValue
+func getEnv(key string) (string, bool) {
+	value, exists := os.LookupEnv(key)
+	return value, exists
 }
 
 func getEnvAsInt(key string, defaultValue int) int {
